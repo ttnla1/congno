@@ -12,7 +12,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Times New Roman', serif;
-      background: linear-gradient(135deg, #e3f2fd 0%, #f0f4f8 100%);
+      background: linear-gradient(135deg, #f3e5f5 0%, #f0f4f8 100%);
       height: 100%;
       overflow: auto;
     }
@@ -25,7 +25,7 @@
       width: 100%;
       min-height: 100%;
       padding: 30px 20px;
-      background: linear-gradient(135deg, #e3f2fd 0%, #f0f4f8 100%);
+      background: linear-gradient(135deg, #f3e5f5 0%, #f0f4f8 100%);
     }
 
     .content-wrapper {
@@ -41,11 +41,11 @@
       text-align: center;
       margin-bottom: 30px;
       padding-bottom: 20px;
-      border-bottom: 3px solid #64b5f6;
+      border-bottom: 3px solid #9575cd;
     }
 
     .header h1 {
-      color: #1976d2;
+      color: #7e57c2;
       font-size: 28px;
       margin: 0 0 15px 0;
       font-weight: bold;
@@ -58,7 +58,7 @@
     }
 
     .debt-title {
-      color: #1565c0;
+      color: #7e57c2;
       font-size: 20px;
       font-weight: bold;
       margin-top: 20px;
@@ -66,11 +66,11 @@
     }
 
     .input-section {
-      background: #f5f9fc;
+      background: #f3e5f5;
       padding: 25px;
       border-radius: 8px;
       margin-bottom: 25px;
-      border: 1px solid #bbdefb;
+      border: 1px solid #ce93d8;
     }
 
     .input-row {
@@ -87,7 +87,7 @@
 
     .input-group label {
       font-size: 14px;
-      color: #1976d2;
+      color: #7e57c2;
       margin-bottom: 5px;
       font-weight: 600;
     }
@@ -95,7 +95,7 @@
     .input-group input,
     .input-group select {
       padding: 10px;
-      border: 2px solid #bbdefb;
+      border: 2px solid #ce93d8;
       border-radius: 6px;
       font-size: 14px;
       font-family: 'Times New Roman', serif;
@@ -105,11 +105,11 @@
     .input-group input:focus,
     .input-group select:focus {
       outline: none;
-      border-color: #42a5f5;
+      border-color: #9575cd;
     }
 
     .btn-add {
-      background: #42a5f5;
+      background: #7e57c2;
       color: white;
       border: none;
       padding: 12px 30px;
@@ -122,11 +122,11 @@
     }
 
     .btn-add:hover {
-      background: #1e88e5;
+      background: #673ab7;
     }
 
     .btn-add:disabled {
-      background: #90caf9;
+      background: #b39ddb;
       cursor: not-allowed;
     }
 
@@ -142,7 +142,7 @@
     }
 
     th {
-      background: #64b5f6;
+      background: #9575cd;
       color: white;
       padding: 15px;
       text-align: left;
@@ -152,13 +152,13 @@
 
     td {
       padding: 12px 15px;
-      border-bottom: 1px solid #e3f2fd;
+      border-bottom: 1px solid #f3e5f5;
       color: #424242;
       font-size: 14px;
     }
 
     tr:hover {
-      background: #f5f9fc;
+      background: #f3e5f5;
     }
 
     .btn-delete {
@@ -185,19 +185,19 @@
     .total-section {
       text-align: right;
       padding: 20px;
-      background: #e3f2fd;
+      background: #f3e5f5;
       border-radius: 8px;
       margin-bottom: 25px;
     }
 
     .total-section h3 {
-      color: #1565c0;
+      color: #7e57c2;
       font-size: 20px;
       margin: 0;
     }
 
     .btn-export {
-      background: #66bb6a;
+      background: #26a69a;
       color: white;
       border: none;
       padding: 15px 40px;
@@ -212,7 +212,7 @@
     }
 
     .btn-export:hover {
-      background: #4caf50;
+      background: #00897b;
     }
 
     .empty-state {
@@ -340,6 +340,7 @@
 
     const dataHandler = {
       onDataChanged(data) {
+        console.log('onDataChanged được gọi với dữ liệu:', data);
         records = data || [];
         renderTable();
         updateTotal();
@@ -369,6 +370,8 @@
     }
 
     async function init() {
+      console.log('Khởi tạo ứng dụng...');
+      
       // Set up event listeners first
       document.getElementById('entry-form').addEventListener('submit', handleSubmit);
       document.getElementById('btn-export').addEventListener('click', exportToWord);
@@ -431,16 +434,19 @@
       }
 
       // Initialize Data SDK
+      console.log('Đang khởi tạo Data SDK...');
       const initResult = await window.dataSdk.init(dataHandler);
       if (!initResult.isOk) {
         showNotification('Không thể khởi tạo ứng dụng', true);
         console.error('Data SDK init failed:', initResult.error);
         return;
       }
+      console.log('Data SDK đã khởi tạo thành công');
     }
 
     async function handleSubmit(e) {
       e.preventDefault();
+      console.log('Form được submit');
 
       if (records.length >= 999) {
         showNotification('Đã đạt giới hạn 999 bản ghi', true);
@@ -459,6 +465,8 @@
       const soLuong = parseFloat(soLuongInput.value);
       const donGia = parseFloat(donGiaInput.value);
 
+      console.log('Giá trị nhập:', { ngay, tenHang, soLuong, donGia });
+
       if (!ngay || !tenHang || isNaN(soLuong) || isNaN(donGia)) {
         showNotification('Vui lòng điền đầy đủ thông tin', true);
         return;
@@ -470,7 +478,6 @@
       updateLoadingState(true);
 
       const newRecord = {
-        id: Date.now().toString(),
         ngay: ngay,
         ten_hang: tenHang,
         so_luong: soLuong,
@@ -479,19 +486,25 @@
         created_at: new Date().toISOString()
       };
 
+      console.log('Đang tạo bản ghi mới:', newRecord);
+
       const result = await window.dataSdk.create(newRecord);
+
+      console.log('Kết quả create:', result);
 
       isLoading = false;
       updateLoadingState(false);
 
       if (result.isOk) {
+        console.log('Thêm thành công!');
         ngayInput.value = '';
         tenHangInput.value = '';
         soLuongInput.value = '';
         donGiaInput.value = '';
         showNotification('Đã thêm thành công');
       } else {
-        showNotification('Không thể thêm dữ liệu: ' + (result.error?.message || 'Lỗi không xác định'), true);
+        console.error('Lỗi khi thêm:', result.error);
+        showNotification('Không thể thêm dữ liệu', true);
       }
     }
 
@@ -514,6 +527,7 @@
     }
 
     function renderTable() {
+      console.log('Đang render bảng với', records.length, 'bản ghi');
       const tbody = document.getElementById('table-body');
       
       if (records.length === 0) {
@@ -671,5 +685,5 @@
 
     init();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b6fb32ef1dec7ba',t:'MTc2NzI0NjIxNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b6fbd281253c7ba',t:'MTc2NzI0NjYyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
