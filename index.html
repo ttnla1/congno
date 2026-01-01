@@ -449,10 +449,21 @@
 
       if (isLoading) return;
 
-      const ngay = document.getElementById('ngay').value;
-      const tenHang = document.getElementById('ten-hang').value;
-      const soLuong = parseFloat(document.getElementById('so-luong').value);
-      const donGia = parseFloat(document.getElementById('don-gia').value);
+      const ngayInput = document.getElementById('ngay');
+      const tenHangInput = document.getElementById('ten-hang');
+      const soLuongInput = document.getElementById('so-luong');
+      const donGiaInput = document.getElementById('don-gia');
+
+      const ngay = ngayInput.value;
+      const tenHang = tenHangInput.value;
+      const soLuong = parseFloat(soLuongInput.value);
+      const donGia = parseFloat(donGiaInput.value);
+
+      if (!ngay || !tenHang || isNaN(soLuong) || isNaN(donGia)) {
+        showNotification('Vui lòng điền đầy đủ thông tin', true);
+        return;
+      }
+
       const thanhTien = soLuong * donGia;
 
       isLoading = true;
@@ -460,7 +471,7 @@
 
       const newRecord = {
         id: Date.now().toString(),
-        ngay,
+        ngay: ngay,
         ten_hang: tenHang,
         so_luong: soLuong,
         don_gia: donGia,
@@ -474,10 +485,13 @@
       updateLoadingState(false);
 
       if (result.isOk) {
-        document.getElementById('entry-form').reset();
+        ngayInput.value = '';
+        tenHangInput.value = '';
+        soLuongInput.value = '';
+        donGiaInput.value = '';
         showNotification('Đã thêm thành công');
       } else {
-        showNotification('Không thể thêm dữ liệu', true);
+        showNotification('Không thể thêm dữ liệu: ' + (result.error?.message || 'Lỗi không xác định'), true);
       }
     }
 
@@ -657,5 +671,5 @@
 
     init();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b6f981fc535c7ba',t:'MTc2NzI0NTEwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b6fb32ef1dec7ba',t:'MTc2NzI0NjIxNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
