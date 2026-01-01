@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="vi">
  <head>
@@ -295,13 +294,6 @@
        <div class="input-group"><label for="don-gia">Đơn giá</label> <input type="number" id="don-gia" step="1" min="0" required>
        </div>
       </div><button type="submit" class="btn-add" id="btn-add">Thêm vào bảng</button>
-            </button>
-            </div>
-    </form>
-                <ul id="table-container" class="space-y-3">
-                    <!-- Chưa có dữ liệu, vui lòng thêm vào -->
-                </ul>
-            </div>
      </form>
     </div>
     <div class="table-container">
@@ -314,6 +306,11 @@
         <th>Đơn giá</th>
         <th>Thành tiền</th>
         <th>Xóa</th>
+       </tr>
+      </thead>
+      <tbody id="table-body">
+       <tr class="empty-state">
+        <td colspan="6">Chưa có dữ liệu. Vui lòng thêm mục mới.</td>
        </tr>
       </tbody>
      </table>
@@ -334,11 +331,11 @@
       company_tax: "0314692601",
       company_phone: "1455",
       debt_title: "CÔNG NỢ CHI TIẾT ĐỨC ANH",
-      background_color: "#e3f2fd",
-      primary_color: "#42a5f5",
+      background_color: "#f3e5f5",
+      primary_color: "#7e57c2",
       text_color: "#424242",
-      accent_color: "#66bb6a",
-      header_color: "#64b5f6"
+      accent_color: "#26a69a",
+      header_color: "#9575cd"
     };
 
     const dataHandler = {
@@ -660,7 +657,5 @@
 
     init();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b6f8cd3d689c7ba',t:'MTc2NzI0NDY0NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b6f981fc535c7ba',t:'MTc2NzI0NTEwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
-
