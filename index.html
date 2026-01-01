@@ -56,11 +56,11 @@
     <div class="bg-white rounded-2xl shadow-lg p-8 mb-6 border border-indigo-100">
      <div class="text-center">
       <h1 id="company-name" class="text-2xl font-bold text-indigo-900 mb-2">CTY TNHH THỦY HẢI SẢN SONG LINH</h1>
-      <p id="company-address" class="text-gray-600 mb-1">61 Nguyễn Duy P3 Bình Thạnh</p>
+      <p id="company-address" class="text-gray-600 mb-1">61 Nguyễn Duy P3 Bình Th���nh</p>
       <p id="company-tax" class="text-gray-600 mb-1">MST: 0314692601</p>
       <p id="company-phone" class="text-gray-600 mb-4">Điện thoại: 1455</p>
       <div class="border-t-2 border-indigo-200 pt-4 mt-4">
-       <h2 id="debt-title" class="text-xl font-semibold text-indigo-700">CÔNG NỢ CHI TIẾT ĐỨC ANH</h2>
+       <h2 id="debt-title" class="text-xl font-semibold text-indigo-700">CÔNG NỢ CHI TIẾT ��ỨC ANH</h2>
       </div>
      </div>
     </div><!-- Export Button -->
@@ -73,7 +73,7 @@
      <form id="add-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
       <div><label for="ngay-input" class="block text-sm font-medium text-gray-700 mb-1">Ngày</label> <input type="date" id="ngay-input" class="input-field w-full px-4 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
       </div>
-      <div><label for="ten-hang-input" class="block text-sm font-medium text-gray-700 mb-1">Tên hàng</label> <input type="text" id="ten-hang-input" class="input-field w-full px-4 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Nhập tên hàng" required>
+      <div><label for="ten-hang-input" class="block text-sm font-medium text-gray-700 mb-1">Tên hàng</label> <select id="ten-hang-input" class="input-field w-full px-4 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white" required> <option value="">Chọn tên hàng</option> <option value="Cá Mú">Cá Mú</option> <option value="Cá Chim">Cá Chim</option> <option value="Cá Chình">Cá Chình</option> <option value="Ba Ba">Ba Ba</option> <option value="Cá Lăng">Cá Lăng</option> <option value="Cá Chép">Cá Chép</option> <option value="Cá tai tượng">Cá tai tượng</option> <option value="Tôm sú">Tôm sú</option> </select>
       </div>
       <div><label for="so-luong-input" class="block text-sm font-medium text-gray-700 mb-1">Số lượng</label> <input type="number" id="so-luong-input" class="input-field w-full px-4 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="0" min="0" step="0.01" required>
       </div>
@@ -302,7 +302,6 @@
                             padding: 8px;
                         }
                         th {
-                            background-color: #f0f0f0;
                             font-weight: bold;
                             text-align: center;
                         }
@@ -323,7 +322,6 @@
                         }
                         .total-row {
                             font-weight: bold;
-                            background-color: #f0f0f0;
                         }
                     </style>
                 </head>
@@ -339,16 +337,16 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt;">Ngày</th>
-                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt;">Tên hàng</th>
-                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt;">Số lượng</th>
-                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt;">Đơn giá</th>
-                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt;">Thành tiền</th>
+                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt; border: 1px solid black; padding: 8px;">Ngày</th>
+                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt; border: 1px solid black; padding: 8px;">Tên hàng</th>
+                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt; border: 1px solid black; padding: 8px;">Số lượng</th>
+                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt; border: 1px solid black; padding: 8px;">Đơn giá</th>
+                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt; border: 1px solid black; padding: 8px;">Thành tiền</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${tableRows}
-                            <tr class="total-row">
+                            <tr>
                                 <td colspan="4" style="border: 1px solid black; padding: 8px; text-align: right; font-weight: bold; font-family: 'Times New Roman', serif; font-size: 13pt;">TỔNG CỘNG:</td>
                                 <td style="border: 1px solid black; padding: 8px; text-align: right; font-weight: bold; font-family: 'Times New Roman', serif; font-size: 13pt;">${total.toLocaleString('vi-VN')}</td>
                             </tr>
@@ -494,5 +492,5 @@
 
         init();
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b6f452857a1c7ba',t:'MTc2NzI0MTcwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b6f5b6c606cc7ba',t:'MTc2NzI0MjYyMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
