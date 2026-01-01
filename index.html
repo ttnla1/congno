@@ -1,703 +1,201 @@
 <!doctype html>
 <html lang="vi">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quản Lý Công Nợ</title>
-  <script src="/_sdk/data_sdk.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <style>
-    body {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Times New Roman', serif;
-      background: linear-gradient(135deg, #f3e5f5 0%, #f0f4f8 100%);
-      height: 100%;
-      overflow: auto;
-    }
+<head>
+<meta charset="UTF-8">
+<title>Quản Lý Công Nợ</title>
 
-    html {
-      height: 100%;
-    }
+<script src="/_sdk/data_sdk.js"></script>
+<script src="/_sdk/element_sdk.js"></script>
 
-    .container {
-      width: 100%;
-      min-height: 100%;
-      padding: 30px 20px;
-      background: linear-gradient(135deg, #f3e5f5 0%, #f0f4f8 100%);
-    }
+<style>
+body{font-family:'Times New Roman',serif;background:#f3e5f5;margin:0}
+.container{padding:30px}
+.content-wrapper{background:#fff;padding:30px;border-radius:10px}
+input,select,button{padding:8px}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #ccc;padding:8px;text-align:center}
+th{background:#64b5f6;color:white}
+.btn-add{background:#42a5f5;color:white;border:none;cursor:pointer}
+.btn-delete{background:#ef5350;color:white;border:none;cursor:pointer}
+.total{margin-top:15px;font-weight:bold;text-align:right}
+</style>
+</head>
 
-    .content-wrapper {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      padding: 40px;
-    }
+<body>
+<div class="container">
+<div class="content-wrapper">
 
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-      padding-bottom: 20px;
-      border-bottom: 3px solid #9575cd;
-    }
+<h2 style="text-align:center">CÔNG NỢ CHI TIẾT</h2>
 
-    .header h1 {
-      color: #7e57c2;
-      font-size: 28px;
-      margin: 0 0 15px 0;
-      font-weight: bold;
-    }
+<form id="entry-form">
+  <input type="date" id="ngay" required>
+  <select id="ten-hang" required>
+    <option value="">-- Tên hàng --</option>
+    <option value="Cá Chạch Lấu">Cá Chạch Lấu</option>
+    <option value="Cá Tôm">Cá Tôm</option>
+  </select>
+  <input type="number" id="so-luong" placeholder="Số lượng" step="0.01" required>
+  <input type="number" id="don-gia" placeholder="Đơn giá" required>
+  <button type="submit" class="btn-add" id="btn-add">Thêm vào bảng</button>
+</form>
 
-    .header-info {
-      color: #424242;
-      font-size: 15px;
-      line-height: 1.8;
-    }
+<br>
 
-    .debt-title {
-      color: #7e57c2;
-      font-size: 20px;
-      font-weight: bold;
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    .input-section {
-      background: #f3e5f5;
-      padding: 25px;
-      border-radius: 8px;
-      margin-bottom: 25px;
-      border: 1px solid #ce93d8;
-    }
-
-    .input-row {
-      display: grid;
-      grid-template-columns: 1fr 2fr 1fr 1fr;
-      gap: 15px;
-      margin-bottom: 15px;
-    }
-
-    .input-group {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .input-group label {
-      font-size: 14px;
-      color: #7e57c2;
-      margin-bottom: 5px;
-      font-weight: 600;
-    }
-
-    .input-group input,
-    .input-group select {
-      padding: 10px;
-      border: 2px solid #ce93d8;
-      border-radius: 6px;
-      font-size: 14px;
-      font-family: 'Times New Roman', serif;
-      transition: border-color 0.3s;
-    }
-
-    .input-group input:focus,
-    .input-group select:focus {
-      outline: none;
-      border-color: #9575cd;
-    }
-
-    .btn-add {
-      background: #7e57c2;
-      color: white;
-      border: none;
-      padding: 12px 30px;
-      border-radius: 6px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-      font-family: 'Times New Roman', serif;
-    }
-
-    .btn-add:hover {
-      background: #673ab7;
-    }
-
-    .btn-add:disabled {
-      background: #b39ddb;
-      cursor: not-allowed;
-    }
-
-    .table-container {
-      overflow-x: auto;
-      margin-bottom: 25px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-
-    th {
-      background: #9575cd;
-      color: white;
-      padding: 15px;
-      text-align: left;
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    td {
-      padding: 12px 15px;
-      border-bottom: 1px solid #f3e5f5;
-      color: #424242;
-      font-size: 14px;
-    }
-
-    tr:hover {
-      background: #f3e5f5;
-    }
-
-    .btn-delete {
-      background: #ef5350;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: background 0.3s;
-      font-family: 'Times New Roman', serif;
-    }
-
-    .btn-delete:hover {
-      background: #e53935;
-    }
-
-    .btn-delete:disabled {
-      background: #ef9a9a;
-      cursor: not-allowed;
-    }
-
-    .total-section {
-      text-align: right;
-      padding: 20px;
-      background: #f3e5f5;
-      border-radius: 8px;
-      margin-bottom: 25px;
-    }
-
-    .total-section h3 {
-      color: #7e57c2;
-      font-size: 20px;
-      margin: 0;
-    }
-
-    .btn-export {
-      background: #26a69a;
-      color: white;
-      border: none;
-      padding: 15px 40px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-      display: block;
-      margin: 0 auto;
-      font-family: 'Times New Roman', serif;
-    }
-
-    .btn-export:hover {
-      background: #00897b;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 40px;
-      color: #90a4ae;
-      font-size: 15px;
-    }
-
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #66bb6a;
-      color: white;
-      padding: 15px 25px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      opacity: 0;
-      transition: opacity 0.3s;
-      z-index: 1000;
-      font-size: 14px;
-    }
-
-    .notification.show {
-      opacity: 1;
-    }
-
-    .notification.error {
-      background: #ef5350;
-    }
-
-    .limit-warning {
-      background: #fff3cd;
-      border: 1px solid #ffc107;
-      color: #856404;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      text-align: center;
-      font-size: 14px;
-    }
-  </style>
-  <style>@view-transition { navigation: auto; }</style>
-  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
- </head>
- <body>
-  <div class="container">
-   <div class="content-wrapper">
-    <div class="header">
-     <h1 id="company-name">CTY TNHH THỦY HẢI SẢN SONG LINH</h1>
-     <div class="header-info">
-      <div id="company-address">
-       61 Nguyễn Duy P3 Bình Thạnh
-      </div>
-      <div id="company-tax">
-       MST: 0314692601
-      </div>
-      <div id="company-phone">
-       Điện thoại: 1455
-      </div>
-     </div>
-     <div class="debt-title" id="debt-title">
-      CÔNG NỢ CHI TIẾT ĐỨC ANH
-     </div>
-    </div>
-    <div id="limit-warning" class="limit-warning" style="display: none;">
-     Đã đạt giới hạn 999 bản ghi. Vui lòng xóa một số bản ghi trước khi thêm mới.
-    </div>
-    <div class="input-section">
-     <form id="entry-form">
-      <div class="input-row">
-       <div class="input-group"><label for="ngay">Ngày</label> <input type="date" id="ngay" required>
-       </div>
-       <div class="input-group"><label for="ten-hang">Tên hàng</label> <select id="ten-hang" required> <option value="">-- Chọn loại hàng --</option> <option value="Cá Mú">Cá Mú</option> <option value="Cá Chim">Cá Chim</option> <option value="Cá Chình">Cá Chình</option> <option value="Ba Ba">Ba Ba</option> <option value="Cá Lăng">Cá Lăng</option> <option value="Cá Chép">Cá Chép</option> <option value="Cá tai tượng">Cá tai tượng</option> <option value="Tôm sú">Tôm sú</option> <option value="Tôm Càng">Tôm Càng</option> <option value="Cá Chình Bông">Cá Chình Bông</option> <option value="Cá chình đen">Cá chình đen</option> <option value="Cá Chạch Lấu">Cá Chạch Lấu</option> <option value="Cá Tầm">Cá Tầm</option> </select>
-       </div>
-       <div class="input-group"><label for="so-luong">Số lượng</label> <input type="number" id="so-luong" step="0.01" min="0" required>
-       </div>
-       <div class="input-group"><label for="don-gia">Đơn giá</label> <input type="number" id="don-gia" step="1" min="0" required>
-       </div>
-      </div><button type="submit" class="btn-add" id="btn-add">Thêm vào bảng</button>
-     </form>
-    </div>
-    <div class="table-container">
-     <table>
-      <thead>
-       <tr>
-        <th>Ngày</th>
-        <th>Tên hàng</th>
-        <th>Số lượng</th>
-        <th>Đơn giá</th>
-        <th>Thành tiền</th>
-        <th>Xóa</th>
-       </tr>
-      </thead>
-      <table>
-  <thead>
-    <tr>
-      <th>Ngày</th>
-      <th>Tên hàng</th>
-      <th>Số lượng</th>
-      <th>Đơn giá</th>
-      <th>Thành tiền</th>
-    </tr>
-  </thead>
-  <tbody id="bangDuLieu"></tbody>
+<table>
+<thead>
+<tr>
+  <th>Ngày</th>
+  <th>Tên hàng</th>
+  <th>Số lượng</th>
+  <th>Đơn giá</th>
+  <th>Thành tiền</th>
+  <th>Xóa</th>
+</tr>
+</thead>
+<tbody id="table-body">
+<tr class="empty">
+<td colspan="6">Chưa có dữ liệu</td>
+</tr>
+</tbody>
 </table>
-      <tbody id="table-body">
-       <tr class="empty-state">
-        <td colspan="6">Chưa có dữ liệu. Vui lòng thêm mục mới.</td>
-       </tr>
-      </tbody>
-     </table>
-    </div>
-    <div class="total-section">
-     <h3>Tổng cộng: <span id="total-amount">0</span> đ</h3>
-    </div><button class="btn-export" id="btn-export">Xuất file Word</button>
-   </div>
-  </div>
-  <div id="notification" class="notification"></div>
-  <script>
-    let records = [];
-    let isLoading = false;
 
-    const defaultConfig = {
-      company_name: "CTY TNHH THỦY HẢI SẢN SONG LINH",
-      company_address: "61 Nguyễn Duy P3 Bình Thạnh",
-      company_tax: "0314692601",
-      company_phone: "1455",
-      debt_title: "CÔNG NỢ CHI TIẾT ĐỨC ANH",
-      background_color: "#f3e5f5",
-      primary_color: "#7e57c2",
-      text_color: "#424242",
-      accent_color: "#26a69a",
-      header_color: "#9575cd"
-    };
+<div class="total">
+Tổng cộng: <span id="total-amount">0</span> đ
+</div>
 
-    const dataHandler = {
-      onDataChanged(data) {
-        console.log('onDataChanged được gọi với dữ liệu:', data);
-        records = data || [];
-        renderTable();
-        updateTotal();
-        updateLimitWarning();
-      }
-    };
+</div>
+</div>
 
-    async function onConfigChange(config) {
-      document.getElementById('company-name').textContent = config.company_name || defaultConfig.company_name;
-      document.getElementById('company-address').textContent = config.company_address || defaultConfig.company_address;
-      document.getElementById('company-tax').textContent = 'MST: ' + (config.company_tax || defaultConfig.company_tax);
-      document.getElementById('company-phone').textContent = 'Điện thoại: ' + (config.company_phone || defaultConfig.company_phone);
-      document.getElementById('debt-title').textContent = config.debt_title || defaultConfig.debt_title;
+<script>
+let records = [];
+let isLoading = false;
 
-      const backgroundColor = config.background_color || defaultConfig.background_color;
-      const primaryColor = config.primary_color || defaultConfig.primary_color;
-      const textColor = config.text_color || defaultConfig.text_color;
-      const accentColor = config.accent_color || defaultConfig.accent_color;
-      const headerColor = config.header_color || defaultConfig.header_color;
+/* ================= KHỞI TẠO DATA SDK ================= */
+const dataHandler = {
+  onDataChanged(data){
+    records = data || [];
+    renderTable();
+    updateTotal();
+  }
+};
 
-      document.querySelector('.container').style.background = `linear-gradient(135deg, ${backgroundColor} 0%, #f0f4f8 100%)`;
-      document.querySelector('.btn-add').style.background = primaryColor;
-      document.querySelector('.btn-export').style.background = accentColor;
-      document.querySelectorAll('th').forEach(th => th.style.background = headerColor);
-      document.querySelectorAll('td').forEach(td => td.style.color = textColor);
-      document.querySelector('.header h1').style.color = primaryColor;
-    }
+async function init(){
+  document.getElementById("entry-form")
+    .addEventListener("submit", handleSubmit);
 
-    async function init() {
-      console.log('Khởi tạo ứng dụng...');
-      
-      // Set up event listeners first
-      document.getElementById('entry-form').addEventListener('submit', handleSubmit);
-      document.getElementById('btn-export').addEventListener('click', exportToWord);
+  if(window.dataSdk){
+    await window.dataSdk.init(dataHandler);
+  }
+}
+init();
 
-      // Initialize Element SDK
-      if (window.elementSdk) {
-        window.elementSdk.init({
-          defaultConfig,
-          onConfigChange,
-          mapToCapabilities: (config) => ({
-            recolorables: [
-              {
-                get: () => config.background_color || defaultConfig.background_color,
-                set: (value) => {
-                  config.background_color = value;
-                  window.elementSdk.setConfig({ background_color: value });
-                }
-              },
-              {
-                get: () => config.primary_color || defaultConfig.primary_color,
-                set: (value) => {
-                  config.primary_color = value;
-                  window.elementSdk.setConfig({ primary_color: value });
-                }
-              },
-              {
-                get: () => config.text_color || defaultConfig.text_color,
-                set: (value) => {
-                  config.text_color = value;
-                  window.elementSdk.setConfig({ text_color: value });
-                }
-              },
-              {
-                get: () => config.accent_color || defaultConfig.accent_color,
-                set: (value) => {
-                  config.accent_color = value;
-                  window.elementSdk.setConfig({ accent_color: value });
-                }
-              },
-              {
-                get: () => config.header_color || defaultConfig.header_color,
-                set: (value) => {
-                  config.header_color = value;
-                  window.elementSdk.setConfig({ header_color: value });
-                }
-              }
-            ],
-            borderables: [],
-            fontEditable: undefined,
-            fontSizeable: undefined
-          }),
-          mapToEditPanelValues: (config) => new Map([
-            ["company_name", config.company_name || defaultConfig.company_name],
-            ["company_address", config.company_address || defaultConfig.company_address],
-            ["company_tax", config.company_tax || defaultConfig.company_tax],
-            ["company_phone", config.company_phone || defaultConfig.company_phone],
-            ["debt_title", config.debt_title || defaultConfig.debt_title]
-          ])
-        });
-      }
+/* ================= THÊM DỮ LIỆU ================= */
+async function handleSubmit(e){
+  e.preventDefault();
+  if(isLoading) return;
 
-      // Initialize Data SDK
-      console.log('Đang khởi tạo Data SDK...');
-      const initResult = await window.dataSdk.init(dataHandler);
-      if (!initResult.isOk) {
-        showNotification('Không thể khởi tạo ứng dụng', true);
-        console.error('Data SDK init failed:', initResult.error);
-        return;
-      }
-      console.log('Data SDK đã khởi tạo thành công');
-    }
+  const ngay = ngayInput().value;
+  const tenHang = tenHangInput().value;
+  const soLuong = parseFloat(soLuongInput().value);
+  const donGia = parseFloat(donGiaInput().value);
 
-    async function handleSubmit(e) {
-      e.preventDefault();
-      console.log('Form được submit');
+  if(!ngay || !tenHang || isNaN(soLuong) || isNaN(donGia)){
+    alert("Nhập đầy đủ dữ liệu");
+    return;
+  }
 
-      if (records.length >= 999) {
-        showNotification('Đã đạt giới hạn 999 bản ghi', true);
-        return;
-      }
+  const thanhTien = soLuong * donGia;
 
-      if (isLoading) return;
+  const newRecord = {
+    ngay,
+    ten_hang: tenHang,
+    so_luong: soLuong,
+    don_gia: donGia,
+    thanh_tien: thanhTien,
+    __backendId: Date.now().toString()
+  };
 
-      const ngayInput = document.getElementById('ngay');
-      const tenHangInput = document.getElementById('ten-hang');
-      const soLuongInput = document.getElementById('so-luong');
-      const donGiaInput = document.getElementById('don-gia');
+  isLoading = true;
+  document.getElementById("btn-add").textContent = "Đang xử lý...";
 
-      const ngay = ngayInput.value;
-      const tenHang = tenHangInput.value;
-      const soLuong = parseFloat(soLuongInput.value);
-      const donGia = parseFloat(donGiaInput.value);
+  /* ✅ THÊM NGAY ĐỂ HIỂN THỊ */
+  records.push(newRecord);
+  renderTable();
+  updateTotal();
 
-      console.log('Giá trị nhập:', { ngay, tenHang, soLuong, donGia });
+  /* Đồng bộ lên Data SDK (nếu có) */
+  if(window.dataSdk){
+    await window.dataSdk.create(newRecord);
+  }
 
-      if (!ngay || !tenHang || isNaN(soLuong) || isNaN(donGia)) {
-        showNotification('Vui lòng điền đầy đủ thông tin', true);
-        return;
-      }
+  resetForm();
+  isLoading = false;
+  document.getElementById("btn-add").textContent = "Thêm vào bảng";
+}
 
-      const thanhTien = soLuong * donGia;
+/* ================= RENDER BẢNG ================= */
+function renderTable(){
+  const tbody = document.getElementById("table-body");
 
-      isLoading = true;
-      updateLoadingState(true);
+  if(records.length === 0){
+    tbody.innerHTML =
+      `<tr class="empty"><td colspan="6">Chưa có dữ liệu</td></tr>`;
+    return;
+  }
 
-      const newRecord = {
-        ngay: ngay,
-        ten_hang: tenHang,
-        so_luong: soLuong,
-        don_gia: donGia,
-        thanh_tien: thanhTien,
-        created_at: new Date().toISOString()
-      };
+  tbody.innerHTML = records.map(r=>`
+    <tr>
+      <td>${formatDate(r.ngay)}</td>
+      <td>${r.ten_hang}</td>
+      <td>${r.so_luong}</td>
+      <td>${formatNumber(r.don_gia)}</td>
+      <td>${formatNumber(r.thanh_tien)}</td>
+      <td>
+        <button class="btn-delete"
+          onclick="deleteRow('${r.__backendId}')">X</button>
+      </td>
+    </tr>
+  `).join("");
+}
 
-      console.log('Đang tạo bản ghi mới:', newRecord);
+/* ================= XÓA ================= */
+async function deleteRow(id){
+  records = records.filter(r=>r.__backendId !== id);
+  renderTable();
+  updateTotal();
 
-      const result = await window.dataSdk.create(newRecord);
+  if(window.dataSdk){
+    const rec = records.find(r=>r.__backendId===id);
+    if(rec) await window.dataSdk.delete(rec);
+  }
+}
 
-      console.log('Kết quả create:', result);
+/* ================= TỔNG ================= */
+function updateTotal(){
+  const total = records.reduce((s,r)=>s+r.thanh_tien,0);
+  document.getElementById("total-amount").textContent =
+    formatNumber(total);
+}
 
-      isLoading = false;
-      updateLoadingState(false);
+/* ================= HỖ TRỢ ================= */
+function formatNumber(n){
+  return new Intl.NumberFormat("vi-VN").format(n);
+}
+function formatDate(d){
+  const x=new Date(d);
+  return x.toLocaleDateString("vi-VN");
+}
+function resetForm(){
+  ngayInput().value="";
+  tenHangInput().value="";
+  soLuongInput().value="";
+  donGiaInput().value="";
+}
+const ngayInput=()=>document.getElementById("ngay");
+const tenHangInput=()=>document.getElementById("ten-hang");
+const soLuongInput=()=>document.getElementById("so-luong");
+const donGiaInput=()=>document.getElementById("don-gia");
+</script>
 
-      if (result.isOk) {
-        console.log('Thêm thành công!');
-        ngayInput.value = '';
-        tenHangInput.value = '';
-        soLuongInput.value = '';
-        donGiaInput.value = '';
-        showNotification('Đã thêm thành công');
-      } else {
-        console.error('Lỗi khi thêm:', result.error);
-        showNotification('Không thể thêm dữ liệu', true);
-      }
-    }
-
-    async function deleteRecord(record) {
-      if (isLoading) return;
-
-      isLoading = true;
-      updateLoadingState(true);
-
-      const result = await window.dataSdk.delete(record);
-
-      isLoading = false;
-      updateLoadingState(false);
-
-      if (result.isOk) {
-        showNotification('Đã xóa thành công');
-      } else {
-        showNotification('Không thể xóa dữ liệu', true);
-      }
-    }
-
-    function renderTable() {
-      console.log('Đang render bảng với', records.length, 'bản ghi');
-      const tbody = document.getElementById('table-body');
-      
-      if (records.length === 0) {
-        tbody.innerHTML = '<tr class="empty-state"><td colspan="6">Chưa có dữ liệu. Vui lòng thêm mục mới.</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = records.map(record => `
-        <tr data-id="${record.__backendId}">
-          <td>${formatDate(record.ngay)}</td>
-          <td>${record.ten_hang}</td>
-          <td>${formatNumber(record.so_luong)}</td>
-          <td>${formatNumber(record.don_gia)} đ</td>
-          <td>${formatNumber(record.thanh_tien)} đ</td>
-          <td><button class="btn-delete" data-id="${record.__backendId}">Xóa</button></td>
-        </tr>
-      `).join('');
-
-      tbody.querySelectorAll('.btn-delete').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const id = this.getAttribute('data-id');
-          const record = records.find(r => r.__backendId === id);
-          if (record) deleteRecord(record);
-        });
-      });
-    }
-
-    function updateTotal() {
-      const total = records.reduce((sum, record) => sum + record.thanh_tien, 0);
-      document.getElementById('total-amount').textContent = formatNumber(total);
-    }
-
-    function updateLimitWarning() {
-      const warning = document.getElementById('limit-warning');
-      warning.style.display = records.length >= 999 ? 'block' : 'none';
-    }
-
-    function updateLoadingState(loading) {
-      const btnAdd = document.getElementById('btn-add');
-      const deleteButtons = document.querySelectorAll('.btn-delete');
-      
-      btnAdd.disabled = loading;
-      deleteButtons.forEach(btn => btn.disabled = loading);
-      
-      if (loading) {
-        btnAdd.textContent = 'Đang xử lý...';
-      } else {
-       <button type="button" onclick="themDong()">Lưu</button>
-      }
-    }
-
-    function formatDate(dateStr) {
-      const date = new Date(dateStr);
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      return `${day}/${month}/${year}`;
-    }
-
-    function formatNumber(num) {
-      return new Intl.NumberFormat('vi-VN').format(num);
-    }
-
-    function showNotification(message, isError = false) {
-      const notification = document.getElementById('notification');
-      notification.textContent = message;
-      notification.className = 'notification show' + (isError ? ' error' : '');
-      
-      setTimeout(() => {
-        notification.className = 'notification';
-      }, 3000);
-    }
-
-    function exportToWord() {
-      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
-      
-      const companyName = config.company_name || defaultConfig.company_name;
-      const companyAddress = config.company_address || defaultConfig.company_address;
-      const companyTax = config.company_tax || defaultConfig.company_tax;
-      const companyPhone = config.company_phone || defaultConfig.company_phone;
-      const debtTitle = config.debt_title || defaultConfig.debt_title;
-
-      let tableRows = '';
-      records.forEach(record => {
-        tableRows += `
-          <tr>
-            <td style="border: 1px solid black; padding: 8px; font-size: 13pt;">${formatDate(record.ngay)}</td>
-            <td style="border: 1px solid black; padding: 8px; font-size: 13pt;">${record.ten_hang}</td>
-            <td style="border: 1px solid black; padding: 8px; font-size: 13pt; text-align: right;">${formatNumber(record.so_luong)}</td>
-            <td style="border: 1px solid black; padding: 8px; font-size: 13pt; text-align: right;">${formatNumber(record.don_gia)}</td>
-            <td style="border: 1px solid black; padding: 8px; font-size: 13pt; text-align: right;">${formatNumber(record.thanh_tien)}</td>
-          </tr>
-        `;
-      });
-
-      const total = records.reduce((sum, record) => sum + record.thanh_tien, 0);
-
-      const htmlContent = `
-        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-        <head>
-          <meta charset='utf-8'>
-          <style>
-            body { font-family: 'Times New Roman', serif; font-size: 13pt; }
-            table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-            th, td { border: 1px solid black; padding: 8px; }
-            th { background: white; font-weight: bold; }
-            .header { text-align: center; margin-bottom: 20px; }
-            .total { text-align: right; margin-top: 20px; font-weight: bold; }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <h2 style="font-size: 16pt; margin: 5px 0;">${companyName}</h2>
-            <p style="margin: 3px 0;">${companyAddress}</p>
-            <p style="margin: 3px 0;">MST: ${companyTax}</p>
-            <p style="margin: 3px 0;">Điện thoại: ${companyPhone}</p>
-            <h3 style="font-size: 15pt; margin-top: 20px;">${debtTitle}</h3>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Ngày</th>
-                <th>Tên hàng</th>
-                <th>Số lượng</th>
-                <th>Đơn giá</th>
-                <th>Thành tiền</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${tableRows}
-            </tbody>
-          </table>
-          <div class="total">
-            <p style="font-size: 14pt;">Tổng cộng: ${formatNumber(total)} đ</p>
-          </div>
-        </body>
-        </html>
-      `;
-
-      const blob = new Blob(['\ufeff', htmlContent], {
-        type: 'application/msword'
-      });
-
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `cong-no-${Date.now()}.doc`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-      showNotification('Đã xuất file thành công');
-    }
-
-    init();
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b6fbd281253c7ba',t:'MTc2NzI0NjYyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
-
-
