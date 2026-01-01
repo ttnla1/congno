@@ -71,9 +71,9 @@
     <div class="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-indigo-100">
      <h3 class="text-lg font-semibold text-indigo-900 mb-4">Thêm mục mới</h3>
      <form id="add-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-      <div><label for="ngay-input" class="block text-sm font-medium text-gray-700 mb-1">Ngày</label> <input type="date" id="ngay-input" class="input-field w-full px-4 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+      <div><label for="ngay-input" class="block text-sm font-medium text-gray-700 mb-1">Ng����y</label> <input type="date" id="ngay-input" class="input-field w-full px-4 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
       </div>
-      <div><label for="ten-hang-input" class="block text-sm font-medium text-gray-700 mb-1">Tên hàng</label> <select id="ten-hang-input" class="input-field w-full px-4 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white" required> <option value="">Chọn tên hàng</option> <option value="Cá Mú">Cá Mú</option> <option value="Cá Chim">Cá Chim</option> <option value="Cá Chình">Cá Chình</option> <option value="Ba Ba">Ba Ba</option> <option value="Cá Lăng">Cá Lăng</option> <option value="Cá Chép">Cá Chép</option> <option value="Cá tai tượng">Cá tai tượng</option> <option value="Tôm sú">Tôm sú</option> </select>
+      <div><label for="ten-hang-input" class="block text-sm font-medium text-gray-700 mb-1">Tên hàng</label> <select id="ten-hang-input" class="input-field w-full px-4 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white" required> <option value="">Chọn tên hàng</option> <option value="Cá M��">Cá Mú</option> <option value="Cá Chim">Cá Chim</option> <option value="Cá Chình">Cá Chình</option> <option value="Ba Ba">Ba Ba</option> <option value="Cá Lăng">Cá Lăng</option> <option value="Cá Chép">Cá Chép</option> <option value="Cá tai tượng">Cá tai tượng</option> <option value="Tôm sú">Tôm sú</option> </select>
       </div>
       <div><label for="so-luong-input" class="block text-sm font-medium text-gray-700 mb-1">Số lượng</label> <input type="number" id="so-luong-input" class="input-field w-full px-4 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="0" min="0" step="0.01" required>
       </div>
@@ -398,6 +398,9 @@
 
             const thanhTien = soLuong * donGia;
 
+            const addBtn = document.getElementById('add-btn');
+            addBtn.disabled = true;
+            addBtn.textContent = 'Đang thêm...';
             isLoading = true;
 
             const result = await window.dataSdk.create({
@@ -411,9 +414,12 @@
             });
 
             isLoading = false;
+            addBtn.disabled = false;
+            addBtn.textContent = 'Thêm';
 
             if (result.isOk) {
                 document.getElementById('add-form').reset();
+                showMessage('Đã thêm mục mới thành công!');
             } else {
                 showMessage('Không thể thêm mục. Vui lòng thử lại.', 'error');
             }
@@ -486,5 +492,5 @@
 
         init();
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b6f62d4a799c7ba',t:'MTc2NzI0MjkyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b6f7be3b3c4c7ba',t:'MTc2NzI0Mzk1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
