@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="vi" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Công Nợ Chi Tiết</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .input-field {
+            transition: all 0.2s ease;
+        }
+        
+        .input-field:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
+        
+        .table-row {
+            transition: background-color 0.2s ease;
+        }
+        
+        .table-row:hover {
+            background-color: rgba(99, 102, 241, 0.03);
+        }
+        
+        .delete-btn {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .table-row:hover .delete-btn {
+            opacity: 1;
+        }
+        
+        .total-row {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full">
+  <div id="app" class="w-full h-full bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 overflow-auto">
+   <div class="max-w-7xl mx-auto p-6 sm:p-8"><!-- Header -->
+    <div class="bg-white rounded-2xl shadow-lg p-8 mb-6 border border-indigo-100">
+     <div class="text-center">
+      <h1 id="company-name" class="text-2xl font-bold text-indigo-900 mb-2">CTY TNHH THỦY HẢI SẢN SONG LINH</h1>
+      <p id="company-address" class="text-gray-600 mb-1">61 Nguyễn Duy P3 Bình Thạnh</p>
+      <p id="company-tax" class="text-gray-600 mb-1">MST: 0314692601</p>
+      <p id="company-phone" class="text-gray-600 mb-4">Điện thoại: 1455</p>
+      <div class="border-t-2 border-indigo-200 pt-4 mt-4">
+       <h2 id="debt-title" class="text-xl font-semibold text-indigo-700">CÔNG NỢ CHI TIẾT ĐỨC ANH</h2>
+      </div>
+     </div>
+    </div><!-- Export Button -->
+    <div class="bg-white rounded-2xl shadow-lg p-4 mb-6 border border-indigo-100 flex justify-end"><button id="export-btn" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg> Xuất File Word </button>
+    </div><!-- Add New Entry Form -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-indigo-100">
+     <h3 class="text-lg font-semibold text-indigo-900 mb-4">Thêm mục mới</h3>
+     <form id="add-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div><label for="ngay-input" class="block text-sm font-medium text-gray-700 mb-1">Ngày</label> <input type="date" id="ngay-input" class="input-field w-full px-4 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+      </div>
+      <div><label for="ten-hang-input" class="block text-sm font-medium text-gray-700 mb-1">Tên hàng</label> <input type="text" id="ten-hang-input" class="input-field w-full px-4 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Nhập tên hàng" required>
+      </div>
+      <div><label for="so-luong-input" class="block text-sm font-medium text-gray-700 mb-1">Số lượng</label> <input type="number" id="so-luong-input" class="input-field w-full px-4 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="0" min="0" step="0.01" required>
+      </div>
+      <div><label for="don-gia-input" class="block text-sm font-medium text-gray-700 mb-1">Đơn giá</label> <input type="number" id="don-gia-input" class="input-field w-full px-4 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="0" min="0" step="0.01" required>
+      </div>
+      <div class="flex items-end"><button type="submit" id="add-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"> Thêm </button>
+      </div>
+     </form>
+     <div id="limit-warning" class="hidden mt-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+      Đã đạt giới hạn 999 mục. Vui lòng xóa bớt trước khi thêm mục mới.
+     </div>
+    </div><!-- Table -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-indigo-100">
+     <div class="overflow-x-auto">
+      <table class="w-full">
+       <thead class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+        <tr>
+         <th class="px-6 py-4 text-left text-sm font-semibold">Ngày</th>
+         <th class="px-6 py-4 text-left text-sm font-semibold">Tên hàng</th>
+         <th class="px-6 py-4 text-right text-sm font-semibold">Số lượng</th>
+         <th class="px-6 py-4 text-right text-sm font-semibold">Đơn giá</th>
+         <th class="px-6 py-4 text-right text-sm font-semibold">Thành tiền</th>
+         <th class="px-6 py-4 text-center text-sm font-semibold w-20">Xóa</th>
+        </tr>
+       </thead>
+       <tbody id="table-body">
+        <tr id="empty-state">
+         <td colspan="6" class="px-6 py-12 text-center text-gray-400">Chưa có dữ liệu. Thêm mục đầu tiên của bạn!</td>
+        </tr>
+       </tbody>
+       <tfoot id="total-footer" class="hidden">
+        <tr class="total-row text-white font-bold">
+         <td colspan="4" class="px-6 py-4 text-right text-base">TỔNG CỘNG:</td>
+         <td id="total-amount" class="px-6 py-4 text-right text-lg">0 ₫</td>
+         <td></td>
+        </tr>
+       </tfoot>
+      </table>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+        let records = [];
+        let isLoading = false;
+
+        const defaultConfig = {
+            company_name: "CTY TNHH THỦY HẢI SẢN SONG LINH",
+            company_address: "61 Nguyễn Duy P3 Bình Thạnh",
+            company_tax: "MST: 0314692601",
+            company_phone: "Điện thoại: 1455",
+            debt_title: "CÔNG NỢ CHI TIẾT ĐỨC ANH",
+            background_color: "#f0f4ff",
+            primary_color: "#6366f1",
+            text_color: "#1e1b4b",
+            surface_color: "#ffffff",
+            accent_color: "#8b5cf6"
+        };
+
+        const dataHandler = {
+            onDataChanged(data) {
+                records = data.sort((a, b) => new Date(a.ngay) - new Date(b.ngay));
+                renderTable();
+            }
+        };
+
+        async function onConfigChange(config) {
+            document.getElementById('company-name').textContent = config.company_name || defaultConfig.company_name;
+            document.getElementById('company-address').textContent = config.company_address || defaultConfig.company_address;
+            document.getElementById('company-tax').textContent = config.company_tax || defaultConfig.company_tax;
+            document.getElementById('company-phone').textContent = config.company_phone || defaultConfig.company_phone;
+            document.getElementById('debt-title').textContent = config.debt_title || defaultConfig.debt_title;
+            
+            document.getElementById('app').style.background = `linear-gradient(135deg, ${config.background_color || defaultConfig.background_color} 0%, ${config.surface_color || defaultConfig.surface_color} 100%)`;
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN').format(amount) + ' ₫';
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN');
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            const emptyState = document.getElementById('empty-state');
+            const totalFooter = document.getElementById('total-footer');
+            const totalAmountEl = document.getElementById('total-amount');
+
+            if (records.length === 0) {
+                emptyState.classList.remove('hidden');
+                totalFooter.classList.add('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            totalFooter.classList.remove('hidden');
+
+            const existingRows = new Map(
+                [...tbody.querySelectorAll('.table-row')].map(el => [el.dataset.recordId, el])
+            );
+
+            let total = 0;
+
+            records.forEach(record => {
+                total += record.thanh_tien;
+
+                if (existingRows.has(record.__backendId)) {
+                    const row = existingRows.get(record.__backendId);
+                    row.querySelector('.ngay-cell').textContent = formatDate(record.ngay);
+                    row.querySelector('.ten-hang-cell').textContent = record.ten_hang;
+                    row.querySelector('.so-luong-cell').textContent = record.so_luong.toLocaleString('vi-VN');
+                    row.querySelector('.don-gia-cell').textContent = formatCurrency(record.don_gia);
+                    row.querySelector('.thanh-tien-cell').textContent = formatCurrency(record.thanh_tien);
+                    existingRows.delete(record.__backendId);
+                } else {
+                    const row = createTableRow(record);
+                    tbody.appendChild(row);
+                }
+            });
+
+            existingRows.forEach(row => row.remove());
+
+            totalAmountEl.textContent = formatCurrency(total);
+        }
+
+        function createTableRow(record) {
+            const tr = document.createElement('tr');
+            tr.className = 'table-row border-b border-indigo-50';
+            tr.dataset.recordId = record.__backendId;
+
+            tr.innerHTML = `
+                <td class="px-6 py-4 text-sm text-gray-700 ngay-cell">${formatDate(record.ngay)}</td>
+                <td class="px-6 py-4 text-sm text-gray-700 ten-hang-cell">${record.ten_hang}</td>
+                <td class="px-6 py-4 text-sm text-gray-700 text-right so-luong-cell">${record.so_luong.toLocaleString('vi-VN')}</td>
+                <td class="px-6 py-4 text-sm text-gray-700 text-right don-gia-cell">${formatCurrency(record.don_gia)}</td>
+                <td class="px-6 py-4 text-sm font-semibold text-indigo-900 text-right thanh-tien-cell">${formatCurrency(record.thanh_tien)}</td>
+                <td class="px-6 py-4 text-center">
+                    <button class="delete-btn text-red-500 hover:text-red-700 font-medium text-sm transition-colors" data-id="${record.__backendId}">
+                        Xóa
+                    </button>
+                </td>
+            `;
+
+            tr.querySelector('.delete-btn').addEventListener('click', () => deleteRecord(record));
+
+            return tr;
+        }
+
+        async function deleteRecord(record) {
+            if (isLoading) return;
+            
+            isLoading = true;
+            const result = await window.dataSdk.delete(record);
+            isLoading = false;
+
+            if (!result.isOk) {
+                showMessage('Không thể xóa mục. Vui lòng thử lại.', 'error');
+            }
+        }
+
+        function showMessage(message, type = 'info') {
+            const existingMsg = document.getElementById('toast-message');
+            if (existingMsg) existingMsg.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'toast-message';
+            toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white font-medium z-50 ${
+                type === 'error' ? 'bg-red-500' : 'bg-green-500'
+            }`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function exportToWord() {
+            const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+            
+            const companyName = config.company_name || defaultConfig.company_name;
+            const companyAddress = config.company_address || defaultConfig.company_address;
+            const companyTax = config.company_tax || defaultConfig.company_tax;
+            const companyPhone = config.company_phone || defaultConfig.company_phone;
+            const debtTitle = config.debt_title || defaultConfig.debt_title;
+
+            let tableRows = '';
+            let total = 0;
+
+            records.forEach(record => {
+                total += record.thanh_tien;
+                tableRows += `
+                    <tr>
+                        <td style="border: 1px solid black; padding: 8px; font-family: 'Times New Roman', serif; font-size: 13pt;">${formatDate(record.ngay)}</td>
+                        <td style="border: 1px solid black; padding: 8px; font-family: 'Times New Roman', serif; font-size: 13pt;">${record.ten_hang}</td>
+                        <td style="border: 1px solid black; padding: 8px; text-align: right; font-family: 'Times New Roman', serif; font-size: 13pt;">${record.so_luong.toLocaleString('vi-VN')}</td>
+                        <td style="border: 1px solid black; padding: 8px; text-align: right; font-family: 'Times New Roman', serif; font-size: 13pt;">${record.don_gia.toLocaleString('vi-VN')}</td>
+                        <td style="border: 1px solid black; padding: 8px; text-align: right; font-family: 'Times New Roman', serif; font-size: 13pt;">${record.thanh_tien.toLocaleString('vi-VN')}</td>
+                    </tr>
+                `;
+            });
+
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset='utf-8'>
+                    <title>Công Nợ</title>
+                    <style>
+                        @page {
+                            size: A4;
+                            margin: 2cm;
+                        }
+                        body {
+                            font-family: 'Times New Roman', serif;
+                            font-size: 13pt;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 20px;
+                        }
+                        th, td {
+                            border: 1px solid black;
+                            padding: 8px;
+                        }
+                        th {
+                            background-color: #f0f0f0;
+                            font-weight: bold;
+                            text-align: center;
+                        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 30px;
+                        }
+                        .company-name {
+                            font-weight: bold;
+                            font-size: 14pt;
+                            margin-bottom: 5px;
+                        }
+                        .debt-title {
+                            font-weight: bold;
+                            font-size: 14pt;
+                            margin-top: 20px;
+                            margin-bottom: 20px;
+                        }
+                        .total-row {
+                            font-weight: bold;
+                            background-color: #f0f0f0;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="company-name">${companyName}</div>
+                        <div>${companyAddress}</div>
+                        <div>${companyTax}</div>
+                        <div>${companyPhone}</div>
+                        <div class="debt-title">${debtTitle}</div>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt;">Ngày</th>
+                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt;">Tên hàng</th>
+                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt;">Số lượng</th>
+                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt;">Đơn giá</th>
+                                <th style="font-family: 'Times New Roman', serif; font-size: 13pt;">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                            <tr class="total-row">
+                                <td colspan="4" style="border: 1px solid black; padding: 8px; text-align: right; font-weight: bold; font-family: 'Times New Roman', serif; font-size: 13pt;">TỔNG CỘNG:</td>
+                                <td style="border: 1px solid black; padding: 8px; text-align: right; font-weight: bold; font-family: 'Times New Roman', serif; font-size: 13pt;">${total.toLocaleString('vi-VN')}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob(['\ufeff', htmlContent], {
+                type: 'application/msword'
+            });
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'Cong_No_Chi_Tiet.doc';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            showMessage('Đã xuất file Word thành công!');
+        }
+
+        document.getElementById('export-btn').addEventListener('click', exportToWord);
+
+        document.getElementById('add-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (isLoading) return;
+
+            if (records.length >= 999) {
+                document.getElementById('limit-warning').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('limit-warning').classList.add('hidden');
+
+            const ngay = document.getElementById('ngay-input').value;
+            const tenHang = document.getElementById('ten-hang-input').value.trim();
+            const soLuong = parseFloat(document.getElementById('so-luong-input').value);
+            const donGia = parseFloat(document.getElementById('don-gia-input').value);
+
+            if (!ngay || !tenHang || isNaN(soLuong) || isNaN(donGia)) {
+                showMessage('Vui lòng điền đầy đủ thông tin', 'error');
+                return;
+            }
+
+            const thanhTien = soLuong * donGia;
+
+            const addBtn = document.getElementById('add-btn');
+            addBtn.disabled = true;
+            addBtn.textContent = 'Đang thêm...';
+            isLoading = true;
+
+            const result = await window.dataSdk.create({
+                id: Date.now().toString(),
+                ngay: ngay,
+                ten_hang: tenHang,
+                so_luong: soLuong,
+                don_gia: donGia,
+                thanh_tien: thanhTien,
+                created_at: new Date().toISOString()
+            });
+
+            isLoading = false;
+            addBtn.disabled = false;
+            addBtn.textContent = 'Thêm';
+
+            if (result.isOk) {
+                document.getElementById('add-form').reset();
+                showMessage('Đã thêm mục mới thành công!');
+            } else {
+                showMessage('Không thể thêm mục. Vui lòng thử lại.', 'error');
+            }
+        });
+
+        async function init() {
+            if (window.dataSdk) {
+                const result = await window.dataSdk.init(dataHandler);
+                if (!result.isOk) {
+                    console.error('Failed to initialize data SDK');
+                }
+            }
+
+            if (window.elementSdk) {
+                window.elementSdk.init({
+                    defaultConfig,
+                    onConfigChange,
+                    mapToCapabilities: (config) => ({
+                        recolorables: [
+                            {
+                                get: () => config.background_color || defaultConfig.background_color,
+                                set: (value) => {
+                                    config.background_color = value;
+                                    window.elementSdk.setConfig({ background_color: value });
+                                }
+                            },
+                            {
+                                get: () => config.surface_color || defaultConfig.surface_color,
+                                set: (value) => {
+                                    config.surface_color = value;
+                                    window.elementSdk.setConfig({ surface_color: value });
+                                }
+                            },
+                            {
+                                get: () => config.text_color || defaultConfig.text_color,
+                                set: (value) => {
+                                    config.text_color = value;
+                                    window.elementSdk.setConfig({ text_color: value });
+                                }
+                            },
+                            {
+                                get: () => config.primary_color || defaultConfig.primary_color,
+                                set: (value) => {
+                                    config.primary_color = value;
+                                    window.elementSdk.setConfig({ primary_color: value });
+                                }
+                            },
+                            {
+                                get: () => config.accent_color || defaultConfig.accent_color,
+                                set: (value) => {
+                                    config.accent_color = value;
+                                    window.elementSdk.setConfig({ accent_color: value });
+                                }
+                            }
+                        ],
+                        borderables: [],
+                        fontEditable: undefined,
+                        fontSizeable: undefined
+                    }),
+                    mapToEditPanelValues: (config) => new Map([
+                        ["company_name", config.company_name || defaultConfig.company_name],
+                        ["company_address", config.company_address || defaultConfig.company_address],
+                        ["company_tax", config.company_tax || defaultConfig.company_tax],
+                        ["company_phone", config.company_phone || defaultConfig.company_phone],
+                        ["debt_title", config.debt_title || defaultConfig.debt_title]
+                    ])
+                });
+            }
+        }
+
+        init();
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b6f452857a1c7ba',t:'MTc2NzI0MTcwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
